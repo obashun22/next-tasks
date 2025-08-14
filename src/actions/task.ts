@@ -8,7 +8,7 @@ export interface FormState {
     error: string;
 }
 
-export const createTask = async (state: FormState, formData: FormData) => {
+export const createTask = async (formData: FormData) => {
     const newTask: Task = {
         title: formData.get("title") as string,
         description: formData.get("description") as string,
@@ -20,16 +20,15 @@ export const createTask = async (state: FormState, formData: FormData) => {
         await connectDB();
         await TaskModel.create(newTask);
     } catch {
-        state = {
+        return {
             error: "タスクの作成に失敗しました",
-        }
-        return state;
+        };
     }
 
     redirect("/");
 }
 
-export const updateTask = async (id: string, state: FormState, formData: FormData) => {
+export const updateTask = async (id: string, formData: FormData) => {
     const updateTask: Task = {
         title: formData.get("title") as string,
         description: formData.get("description") as string,
@@ -41,10 +40,9 @@ export const updateTask = async (id: string, state: FormState, formData: FormDat
         await connectDB();
         await TaskModel.updateOne({ _id: id }, updateTask);
     } catch {
-        state = {
+        return {
             error: "タスクの更新に失敗しました",
-        }
-        return state;
+        };
     }
 
     redirect("/");
@@ -54,12 +52,10 @@ export const deleteTask = async (id: string, state: FormState) => {
     try {
         await connectDB();
         await TaskModel.deleteOne({ _id: id });
+        return { error: "" };
     } catch {
-        state = {
-            error: "タスクの削除に失敗しました",
-        }
-        return state;
+        console.error("タスクの削除に失敗しました");
+        return { error: "タスクの削除に失敗しました" };
     }
-    redirect("/");
 }
 

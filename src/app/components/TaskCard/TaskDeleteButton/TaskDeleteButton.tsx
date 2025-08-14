@@ -24,6 +24,9 @@ const TaskDeleteButton: React.FC<TaskDeleteButtonProps> = ({ id }) => {
       >
         <FaTrashAlt className="size-5" />
       </button>
+      {state.error && (
+        <p className="mt-2 text-sm text-red-600">{state.error}</p>
+      )}
     </form>
   );
 };
